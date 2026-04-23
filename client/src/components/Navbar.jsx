@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -11,16 +12,18 @@ import {
   Menu,
   X,
   Languages,
+  Globe,
 } from "lucide-react";
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showTranslate, setShowTranslate] = useState(false);
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,9 +42,15 @@ const Navbar = () => {
     }
   };
 
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem("i18nextLng", lng);
+    setShowLanguageMenu(false);
+  };
+
   const navLinks = [
-    { path: "/", label: "Home", icon: Film },
-    { path: "/titles", label: "Browse", icon: Tv },
+    { path: "/", label: t("nav.home"), icon: Film },
+    { path: "/titles", label: t("nav.titles"), icon: Tv },
   ];
 
   return (
@@ -66,7 +75,7 @@ const Navbar = () => {
               <span className="text-white font-bold text-xl">K</span>
             </motion.div>
             <span className="text-2xl font-bold gradient-text hidden sm:inline">
-              Dramas & Animes
+              {t("app.name")}
             </span>
           </Link>
 
@@ -95,7 +104,7 @@ const Navbar = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search dramas & animes..."
+                placeholder={t("nav.search_placeholder")}
                 className="w-64 px-4 py-2 bg-dark-200 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-all"
               />
               <button
@@ -107,29 +116,56 @@ const Navbar = () => {
             </div>
           </form>
 
-          {/* User Menu and Google Translate - Desktop */}
+          {/* User Menu and Language Switcher - Desktop */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Google Translate Button */}
+            {/* Language Switcher */}
             <div className="relative">
               <button
-                onClick={() => setShowTranslate(!showTranslate)}
+                onClick={() => setShowLanguageMenu(!showLanguageMenu)}
                 className="flex items-center gap-2 px-3 py-2 bg-dark-200 hover:bg-dark-300 rounded-lg transition-all duration-200"
               >
-                <Languages size={18} className="text-gray-400" />
-                <span className="text-sm text-white">Translate</span>
+                <Globe size={18} className="text-gray-400" />
+                <span className="text-sm text-white">
+                  {i18n.language === "en" ? "EN" : "RU"}
+                </span>
+                <Languages size={14} className="text-gray-400" />
               </button>
 
-              {showTranslate && (
+              {showLanguageMenu && (
                 <>
                   <div
                     className="fixed inset-0 z-40"
-                    onClick={() => setShowTranslate(false)}
+                    onClick={() => setShowLanguageMenu(false)}
                   />
-                  <div className="absolute right-0 mt-2 w-64 bg-dark-200 rounded-lg shadow-xl border border-white/10 z-50 p-4">
-                    <div
-                      id="google_translate_element"
-                      className="translate-widget"
-                    ></div>
+                  <div className="absolute right-0 mt-2 w-48 bg-dark-200 rounded-lg shadow-xl border border-white/10 z-50 overflow-hidden">
+                    <button
+                      onClick={() => changeLanguage("en")}
+                      className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-dark-300 transition-all ${
+                        i18n.language === "en"
+                          ? "bg-primary-600/20 text-primary-500"
+                          : "text-white"
+                      }`}
+                    >
+                      <span className="text-xl">🇬🇧</span>
+                      <span>English</span>
+                      {i18n.language === "en" && (
+                        <span className="ml-auto text-primary-500">✓</span>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => changeLanguage("ru")}
+                      className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-dark-300 transition-all ${
+                        i18n.language === "ru"
+                          ? "bg-primary-600/20 text-primary-500"
+                          : "text-white"
+                      }`}
+                    >
+                      <span className="text-xl">🇷🇺</span>
+                      <span>Русский</span>
+                      {i18n.language === "ru" && (
+                        <span className="ml-auto text-primary-500">✓</span>
+                      )}
+                    </button>
                   </div>
                 </>
               )}
@@ -169,13 +205,13 @@ const Navbar = () => {
                   to="/login"
                   className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                 >
-                  Login
+                  {t("nav.login")}
                 </Link>
                 <Link
                   to="/register"
                   className="px-6 py-2 bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg font-semibold hover:from-primary-700 hover:to-primary-800 transition-all"
                 >
-                  Sign Up
+                  {t("nav.register")}
                 </Link>
               </>
             )}
@@ -207,7 +243,7 @@ const Navbar = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search..."
+                  placeholder={t("nav.search_placeholder")}
                   className="w-full px-4 py-3 bg-dark-200 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500"
                 />
                 <button
@@ -235,12 +271,41 @@ const Navbar = () => {
                 </Link>
               ))}
 
-              {/* Mobile Google Translate */}
-              <div className="px-4 py-2">
-                <div
-                  id="google_translate_element_mobile"
-                  className="translate-widget"
-                ></div>
+              {/* Mobile Language Switcher */}
+              <div className="px-4 py-2 space-y-2">
+                <div className="text-sm text-gray-400 mb-2">
+                  {t("nav.language")}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      changeLanguage("en");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                      i18n.language === "en"
+                        ? "bg-primary-600 text-white"
+                        : "bg-dark-200 text-gray-300 hover:bg-dark-300"
+                    }`}
+                  >
+                    <span>🇬🇧</span>
+                    <span>EN</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      changeLanguage("ru");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                      i18n.language === "ru"
+                        ? "bg-primary-600 text-white"
+                        : "bg-dark-200 text-gray-300 hover:bg-dark-300"
+                    }`}
+                  >
+                    <span>🇷🇺</span>
+                    <span>RU</span>
+                  </button>
+                </div>
               </div>
 
               {/* Mobile User Menu */}
@@ -252,7 +317,7 @@ const Navbar = () => {
                     className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-dark-200 transition-all"
                   >
                     <User size={20} />
-                    <span>Profile</span>
+                    <span>{t("nav.profile")}</span>
                   </Link>
                   <button
                     onClick={() => {
@@ -262,7 +327,7 @@ const Navbar = () => {
                     className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-dark-200 transition-all text-red-400"
                   >
                     <LogOut size={20} />
-                    <span>Logout</span>
+                    <span>{t("nav.logout")}</span>
                   </button>
                 </>
               ) : (
@@ -272,14 +337,14 @@ const Navbar = () => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="block px-4 py-3 text-center rounded-lg bg-dark-200 hover:bg-dark-300 transition-all"
                   >
-                    Login
+                    {t("nav.login")}
                   </Link>
                   <Link
                     to="/register"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="block px-4 py-3 text-center rounded-lg bg-gradient-to-r from-primary-600 to-primary-700 font-semibold"
                   >
-                    Sign Up
+                    {t("nav.register")}
                   </Link>
                 </div>
               )}
@@ -292,3 +357,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+  

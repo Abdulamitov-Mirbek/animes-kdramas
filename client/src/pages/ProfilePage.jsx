@@ -1,13 +1,17 @@
-import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import React from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const ProfilePage = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-dark-100 to-gray-900">
       <div className="container mx-auto px-4 py-20">
-        <h1 className="text-4xl font-bold mb-8 gradient-text">My Profile</h1>
+        <h1 className="text-4xl font-bold mb-8 gradient-text">
+          {t("profile.my_profile")}
+        </h1>
         {user ? (
           <div className="bg-dark-200 rounded-xl p-8 max-w-2xl mx-auto">
             <div className="text-center mb-8">
@@ -19,18 +23,20 @@ const ProfilePage = () => {
             </div>
             <div className="space-y-4">
               <div className="flex justify-between items-center py-3 border-b border-white/10">
-                <span className="text-gray-300">Role</span>
+                <span className="text-gray-300">{t("profile.role")}</span>
                 <span className="capitalize">{user.role}</span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-white/10">
-                <span className="text-gray-300">Member since</span>
+                <span className="text-gray-300">
+                  {t("profile.member_since")}
+                </span>
                 <span>{new Date(user.createdAt).toLocaleDateString()}</span>
               </div>
             </div>
           </div>
         ) : (
           <div className="text-center py-20">
-            <p className="text-gray-400">Please login to view your profile</p>
+            <p className="text-gray-400">{t("profile.please_login")}</p>
           </div>
         )}
       </div>

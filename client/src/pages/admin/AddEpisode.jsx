@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 
 const AddEpisode = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const preselectedTitleId = searchParams.get("titleId");
@@ -55,7 +57,7 @@ const AddEpisode = () => {
     e.preventDefault();
 
     if (!selectedTitle) {
-      toast.error("Please select a title");
+      toast.error(t('admin.select_title_error'));
       return;
     }
 
@@ -85,7 +87,7 @@ const AddEpisode = () => {
         });
       }
 
-      toast.success("Episode added successfully!");
+      toast.success(t('admin.episode_added_success'));
       setEpisodeData({
         number: episodeData.number + 1,
         title: "",
@@ -100,7 +102,7 @@ const AddEpisode = () => {
         setTimeout(() => navigate(`/title/${preselectedTitleId}`), 1500);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to add episode");
+      toast.error(error.response?.data?.message || t('admin.add_episode_error'));
     } finally {
       setLoading(false);
     }
@@ -111,13 +113,13 @@ const AddEpisode = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-3xl font-bold text-white mb-8">
-            Add Episode {preselectedTitleName && `for ${preselectedTitleName}`}
+            {t('admin.add_episode')} {preselectedTitleName && `${t('admin.for')} ${preselectedTitleName}`}
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Select Title
+                {t('admin.select_title')}
               </label>
               <select
                 value={selectedTitle}
@@ -126,7 +128,7 @@ const AddEpisode = () => {
                 required
                 disabled={!!preselectedTitleId}
               >
-                <option value="">Select a title...</option>
+                <option value="">{t('admin.select_title_placeholder')}</option>
                 {titles.map((title) => (
                   <option key={title._id} value={title._id}>
                     {title.title} ({title.type})
@@ -137,7 +139,7 @@ const AddEpisode = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Episode Number
+                {t('admin.episode_number')}
               </label>
               <input
                 type="number"
@@ -155,7 +157,7 @@ const AddEpisode = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Episode Title
+                {t('admin.episode_title')}
               </label>
               <input
                 type="text"
@@ -170,7 +172,7 @@ const AddEpisode = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Description
+                {t('admin.description')}
               </label>
               <textarea
                 value={episodeData.description}
@@ -187,7 +189,7 @@ const AddEpisode = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Duration (seconds)
+                {t('admin.duration')}
               </label>
               <input
                 type="number"
@@ -198,7 +200,7 @@ const AddEpisode = () => {
                     duration: parseInt(e.target.value),
                   })
                 }
-                placeholder="1800 = 30 minutes"
+                placeholder={t('admin.duration_placeholder')}
                 className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white"
                 required
               />
@@ -206,7 +208,7 @@ const AddEpisode = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Video Quality
+                {t('admin.video_quality')}
               </label>
               <select
                 value={episodeData.videoQuality}
@@ -229,7 +231,7 @@ const AddEpisode = () => {
             {/* Toggle Buttons */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Video Source
+                {t('admin.video_source')}
               </label>
               <div className="flex gap-3 mb-4">
                 <button
@@ -237,14 +239,14 @@ const AddEpisode = () => {
                   onClick={() => setUploadType("url")}
                   className={`flex-1 py-2 rounded-lg ${uploadType === "url" ? "bg-red-600" : "bg-gray-700"}`}
                 >
-                  Video URL
+                  {t('admin.video_url')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setUploadType("file")}
                   className={`flex-1 py-2 rounded-lg ${uploadType === "file" ? "bg-red-600" : "bg-gray-700"}`}
                 >
-                  Upload File
+                  {t('admin.upload_file')}
                 </button>
               </div>
 
@@ -268,7 +270,7 @@ const AddEpisode = () => {
                     className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    MP4, WebM, MKV (Max 500MB)
+                    {t('admin.file_requirements')}
                   </p>
                 </div>
               )}
@@ -279,7 +281,7 @@ const AddEpisode = () => {
               disabled={loading}
               className="w-full py-3 bg-red-600 hover:bg-red-700 rounded-lg font-semibold disabled:opacity-50"
             >
-              {loading ? "Adding..." : "Add Episode"}
+              {loading ? t('admin.adding') : t('admin.add_episode_button')}
             </button>
           </form>
         </div>

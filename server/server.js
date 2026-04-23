@@ -1,15 +1,18 @@
-import dotenv from "dotenv";
+// server.js
+import dotenv from 'dotenv';
+dotenv.config();  // Call config() explicitly
+
 import app from "./src/app.js";
 import { connectDatabase } from "./src/config/database.js";
 import { connectRedis } from "./src/config/redis.js";
 import logger from "./src/utils/logger.js";
 
-dotenv.config();
-
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
+    console.log('MONGODB_URI:', process.env.MONGODB_URI); // Debug: Check if loaded
+    
     await connectDatabase();
     await connectRedis();
 

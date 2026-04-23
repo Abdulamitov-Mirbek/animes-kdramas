@@ -3,10 +3,13 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { Play, TrendingUp, Star, ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import api from "../services/api";
 import TitleCard from "../components/TitleCard";
 
 const HomePage = () => {
+  const { t } = useTranslation();
+
   const {
     data: titlesData,
     isLoading,
@@ -15,7 +18,7 @@ const HomePage = () => {
     queryKey: ["titles"],
     queryFn: () =>
       api.get("/titles").then((res) => {
-        console.log("API Response:", res.data); // Отладка
+        console.log("API Response:", res.data);
         return res.data;
       }),
   });
@@ -25,7 +28,7 @@ const HomePage = () => {
       <div className="min-h-screen flex items-center justify-center bg-black">
         <div className="relative">
           <div className="w-16 h-16 border-4 border-red-600/20 border-t-red-600 rounded-full animate-spin"></div>
-          <p className="text-gray-400 mt-4 text-sm">Loading...</p>
+          <p className="text-gray-400 mt-4 text-sm">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -36,15 +39,13 @@ const HomePage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black">
         <div className="text-red-500">
-          Error loading titles: {error.message}
+          {t("common.error")}: {error.message}
         </div>
       </div>
     );
   }
 
   const allTitles = titlesData?.titles || [];
-  console.log("All titles count:", allTitles.length); // Отладка
-
   const dramas = allTitles.filter((t) => t.type === "drama");
   const animes = allTitles.filter((t) => t.type === "anime");
   const trending = [...allTitles].sort(
@@ -79,7 +80,7 @@ const HomePage = () => {
               </div>
               <span className="text-gray-300">{trending[0].year}</span>
               <span className="text-gray-300">
-                {trending[0].totalEpisodes} episodes
+                {trending[0].totalEpisodes} {t("home.episodes")}
               </span>
             </div>
             <p className="text-gray-300 max-w-xl line-clamp-2">
@@ -90,7 +91,7 @@ const HomePage = () => {
               className="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-semibold transition-colors"
             >
               <Play className="w-4 h-4" />
-              Watch Now
+              {t("home.watch_now")}
             </Link>
           </div>
         </div>
@@ -101,10 +102,10 @@ const HomePage = () => {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-white flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-red-500" />
-            Trending Now
+            {t("home.trending_now")}
           </h2>
           <Link to="/titles" className="text-gray-400 hover:text-white text-sm">
-            View All <ChevronRight className="inline w-4 h-4" />
+            {t("home.view_all")} <ChevronRight className="inline w-4 h-4" />
           </Link>
         </div>
 
@@ -119,7 +120,7 @@ const HomePage = () => {
       {dramas.length > 0 && (
         <div className="container mx-auto px-4 md:px-8 py-12">
           <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-            <span>🇰🇷</span> Korean Dramas
+            <span>🇰🇷</span> {t("home.korean_dramas")}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
             {dramas.slice(0, 12).map((title) => (
@@ -133,7 +134,7 @@ const HomePage = () => {
       {animes.length > 0 && (
         <div className="container mx-auto px-4 md:px-8 py-12">
           <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-            <span>🎌</span> Anime Series
+            <span>🎌</span> {t("home.anime_series")}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
             {animes.slice(0, 12).map((title) => (
@@ -151,21 +152,29 @@ const HomePage = () => {
               <div className="text-3xl font-bold text-red-500">
                 {allTitles.length}+
               </div>
-              <div className="text-gray-400 text-sm">Total Titles</div>
+              <div className="text-gray-400 text-sm">
+                {t("home.stats.total_titles")}
+              </div>
             </div>
             <div>
               <div className="text-3xl font-bold text-red-500">
                 {allTitles.reduce((sum, t) => sum + (t.totalEpisodes || 0), 0)}+
               </div>
-              <div className="text-gray-400 text-sm">Episodes</div>
+              <div className="text-gray-400 text-sm">
+                {t("home.stats.episodes")}
+              </div>
             </div>
             <div>
               <div className="text-3xl font-bold text-red-500">HD</div>
-              <div className="text-gray-400 text-sm">Quality</div>
+              <div className="text-gray-400 text-sm">
+                {t("home.stats.quality")}
+              </div>
             </div>
             <div>
               <div className="text-3xl font-bold text-red-500">24/7</div>
-              <div className="text-gray-400 text-sm">Streaming</div>
+              <div className="text-gray-400 text-sm">
+                {t("home.stats.streaming")}
+              </div>
             </div>
           </div>
         </div>

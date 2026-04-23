@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import ReactPlayer from "react-player";
+import { useTranslation } from "react-i18next";
 import api from "../services/api";
 import Comments from "../components/Comment";
 
 const WatchPage = () => {
   const { id } = useParams();
+  const { t } = useTranslation();
   const [episode, setEpisode] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedSubtitle, setSelectedSubtitle] = useState("");
@@ -30,7 +32,7 @@ const WatchPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+        <div className="text-white">{t("common.loading")}</div>
       </div>
     );
   }
@@ -38,7 +40,7 @@ const WatchPage = () => {
   if (!episode) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white">Episode not found</div>
+        <div className="text-white">{t("watch.episode_not_found")}</div>
       </div>
     );
   }
@@ -51,7 +53,7 @@ const WatchPage = () => {
             to={`/title/${episode.titleId._id}`}
             className="text-white hover:text-red-500"
           >
-            ← Back to {episode.titleId.title}
+            ← {t("watch.back_to")} {episode.titleId.title}
           </Link>
         </div>
       </div>
@@ -80,12 +82,14 @@ const WatchPage = () => {
 
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <h1 className="text-2xl font-bold text-white">
-            Episode {episode.number}: {episode.title}
+            {t("watch.episode")} {episode.number}: {episode.title}
           </h1>
 
           {episode.subtitles?.length > 0 && (
             <div className="mt-2 flex items-center gap-2">
-              <span className="text-gray-400 text-sm">Subtitles:</span>
+              <span className="text-gray-400 text-sm">
+                {t("watch.subtitles")}:
+              </span>
               <select
                 value={selectedSubtitle}
                 onChange={(e) => setSelectedSubtitle(e.target.value)}
@@ -102,7 +106,6 @@ const WatchPage = () => {
 
           <p className="text-gray-400 mt-4">{episode.description}</p>
 
-          {/* Comments Section */}
           <Comments episodeId={id} />
         </div>
       </div>

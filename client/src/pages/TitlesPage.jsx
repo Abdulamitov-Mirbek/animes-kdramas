@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Search, Filter } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import api from "../services/api";
 import TitleCard from "../components/TitleCard";
 
 const TitlesPage = () => {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("all");
   const [selectedGenre, setSelectedGenre] = useState("all");
@@ -17,7 +19,7 @@ const TitlesPage = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+        <div className="text-white">{t("common.loading")}</div>
       </div>
     );
   }
@@ -61,11 +63,9 @@ const TitlesPage = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">
-            Browse All Titles
+            {t("titles.browse_all")}
           </h1>
-          <p className="text-gray-400">
-            Discover the best Korean dramas and anime
-          </p>
+          <p className="text-gray-400">{t("titles.discover")}</p>
         </div>
 
         {/* Search and Filters */}
@@ -75,7 +75,7 @@ const TitlesPage = () => {
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search by title..."
+              placeholder={t("titles.search_by_title")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-red-500"
@@ -86,26 +86,28 @@ const TitlesPage = () => {
           <div className="flex flex-wrap gap-4">
             <div className="flex items-center gap-2">
               <Filter className="w-4 h-4 text-gray-400" />
-              <span className="text-gray-400 text-sm">Type:</span>
+              <span className="text-gray-400 text-sm">{t("titles.type")}:</span>
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
                 className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1 text-white text-sm"
               >
-                <option value="all">All</option>
-                <option value="drama">Korean Dramas</option>
-                <option value="anime">Anime</option>
+                <option value="all">{t("titles.all")}</option>
+                <option value="drama">{t("titles.korean_dramas")}</option>
+                <option value="anime">{t("titles.anime")}</option>
               </select>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-gray-400 text-sm">Genre:</span>
+              <span className="text-gray-400 text-sm">
+                {t("titles.genre")}:
+              </span>
               <select
                 value={selectedGenre}
                 onChange={(e) => setSelectedGenre(e.target.value)}
                 className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1 text-white text-sm"
               >
-                <option value="all">All Genres</option>
+                <option value="all">{t("titles.all_genres")}</option>
                 {allGenres.map((genre) => (
                   <option key={genre} value={genre}>
                     {genre}
@@ -118,7 +120,9 @@ const TitlesPage = () => {
 
         {/* Results Count */}
         <div className="mb-6">
-          <p className="text-gray-400">Found {filteredTitles.length} titles</p>
+          <p className="text-gray-400">
+            {t("titles.found_titles")}: {filteredTitles.length}
+          </p>
         </div>
 
         {/* Dramas Section */}
@@ -126,7 +130,7 @@ const TitlesPage = () => {
           ? dramas.length > 0 && (
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                  <span>🎬</span> Korean Dramas
+                  <span>🎬</span> {t("titles.korean_dramas")}
                   <span className="text-sm text-gray-400">
                     ({dramas.length})
                   </span>
@@ -145,7 +149,7 @@ const TitlesPage = () => {
           ? animes.length > 0 && (
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                  <span>🎨</span> Anime
+                  <span>🎨</span> {t("titles.anime")}
                   <span className="text-sm text-gray-400">
                     ({animes.length})
                   </span>
@@ -162,9 +166,7 @@ const TitlesPage = () => {
         {/* No Results */}
         {filteredTitles.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-gray-400 text-lg">
-              No titles found matching your criteria.
-            </p>
+            <p className="text-gray-400 text-lg">{t("titles.no_results")}</p>
           </div>
         )}
       </div>

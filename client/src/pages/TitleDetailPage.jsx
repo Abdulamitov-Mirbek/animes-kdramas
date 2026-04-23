@@ -3,11 +3,13 @@ import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Play, Calendar, Clock, Film, Star, PlusCircle } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 import api from "../services/api";
 import RatingCircle from "../components/RatingCircle";
 
 const TitleDetailPage = () => {
   const { id } = useParams();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
 
@@ -30,7 +32,7 @@ const TitleDetailPage = () => {
   if (!title) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white">Title not found</div>
+        <div className="text-white">{t('title_detail.title_not_found')}</div>
       </div>
     );
   }
@@ -77,11 +79,11 @@ const TitleDetailPage = () => {
               </div>
               <div className="flex items-center gap-2 text-gray-400">
                 <Film className="w-4 h-4" />
-                <span>{title.type === "drama" ? "Korean Drama" : "Anime"}</span>
+                <span>{title.type === "drama" ? t('title_detail.korean_drama') : t('title_detail.anime')}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-400">
                 <Clock className="w-4 h-4" />
-                <span>{title.totalEpisodes} Episodes</span>
+                <span>{title.totalEpisodes} {t('title_detail.episodes')}</span>
               </div>
             </div>
 
@@ -100,7 +102,7 @@ const TitleDetailPage = () => {
             {/* Description */}
             <div className="mb-8">
               <h2 className="text-xl font-semibold text-white mb-2">
-                Synopsis
+                {t('title_detail.synopsis')}
               </h2>
               <p className="text-gray-400 leading-relaxed">
                 {title.description}
@@ -115,7 +117,7 @@ const TitleDetailPage = () => {
                   className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition-colors"
                 >
                   <PlusCircle className="w-5 h-5" />
-                  Add Episode to {title.title}
+                  {t('title_detail.add_episode_to')} {title.title}
                 </Link>
               </div>
             )}
@@ -124,7 +126,7 @@ const TitleDetailPage = () => {
             {title.episodes && title.episodes.length > 0 ? (
               <div>
                 <h2 className="text-xl font-semibold text-white mb-4">
-                  Episodes
+                  {t('title_detail.episodes')}
                 </h2>
                 <div className="space-y-3">
                   {title.episodes.map((episode) => (
@@ -136,14 +138,14 @@ const TitleDetailPage = () => {
                       <div className="flex items-center justify-between">
                         <div>
                           <span className="text-red-500 font-semibold">
-                            Episode {episode.number}
+                            {t('title_detail.episode')} {episode.number}
                           </span>
                           <h3 className="text-white font-medium mt-1">
                             {episode.title}
                           </h3>
                           {episode.duration > 0 && (
                             <p className="text-gray-400 text-sm mt-1">
-                              {Math.floor(episode.duration / 60)} minutes
+                              {Math.floor(episode.duration / 60)} {t('title_detail.minutes')}
                             </p>
                           )}
                         </div>
@@ -155,13 +157,13 @@ const TitleDetailPage = () => {
               </div>
             ) : (
               <div className="text-center py-12 bg-gray-800/30 rounded-lg">
-                <p className="text-gray-400">No episodes yet.</p>
+                <p className="text-gray-400">{t('title_detail.no_episodes')}</p>
                 {isAdmin && (
                   <Link
                     to={`/admin/add-episode?titleId=${title._id}&titleName=${encodeURIComponent(title.title)}`}
                     className="inline-block mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm"
                   >
-                    Add First Episode
+                    {t('title_detail.add_first_episode')}
                   </Link>
                 )}
               </div>

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const RegisterPage = () => {
+  const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,13 +26,13 @@ const RegisterPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-dark-100 to-gray-900 flex items-center justify-center">
       <div className="bg-dark-200 rounded-xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold gradient-text">Create Account</h1>
-          <p className="text-gray-400 mt-2">Sign up to start watching</p>
+          <h1 className="text-3xl font-bold gradient-text">{t('auth.create_account')}</h1>
+          <p className="text-gray-400 mt-2">{t('auth.signup_to_watch')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium mb-2">Username</label>
+            <label className="block text-sm font-medium mb-2">{t('auth.username')}</label>
             <input
               type="text"
               value={username}
@@ -41,7 +43,7 @@ const RegisterPage = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Email</label>
+            <label className="block text-sm font-medium mb-2">{t('auth.email')}</label>
             <input
               type="email"
               value={email}
@@ -52,7 +54,7 @@ const RegisterPage = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Password</label>
+            <label className="block text-sm font-medium mb-2">{t('auth.password')}</label>
             <input
               type="password"
               value={password}
@@ -68,14 +70,14 @@ const RegisterPage = () => {
             disabled={loading}
             className="w-full py-3 bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg font-semibold hover:from-primary-700 hover:to-primary-800 transition-all disabled:opacity-50"
           >
-            {loading ? "Creating account..." : "Sign Up"}
+            {loading ? t('auth.creating_account') : t('auth.register')}
           </button>
         </form>
 
         <p className="text-center text-gray-400 mt-6">
-          Already have an account?{" "}
+          {t('auth.has_account')}{" "}
           <Link to="/login" className="text-primary-500 hover:text-primary-400">
-            Login
+            {t('auth.login')}
           </Link>
         </p>
       </div>
